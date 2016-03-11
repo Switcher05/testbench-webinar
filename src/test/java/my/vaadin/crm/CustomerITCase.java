@@ -8,7 +8,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
 
 import com.vaadin.testbench.TestBenchTestCase;
 import com.vaadin.testbench.elements.ButtonElement;
@@ -23,7 +22,7 @@ public class CustomerITCase extends TestBenchTestCase {
 
 	@Before
 	public void setup() {
-		setDriver(new FirefoxDriver());
+		setDriver(DriverUtil.getPreferredDriver());
 		getDriver().get("http://localhost:8080/crm");
 	}
 
