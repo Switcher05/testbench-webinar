@@ -73,6 +73,7 @@ public class MainView extends MainViewDesign implements View, Serializable {
 		try {
 			if (event.getCustomer() == null) {
 				setFormVisible(false);
+				return;
 			}
 			showEditForm("Edit Customer", event.getCustomer());
 			setFormVisible(true);
