@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+ <head>
+  <meta charset="UTF-8" name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;mytheme&quot;}">
+ </head> 
+ <body> 
+  <vaadin-vertical-layout spacing id="customerGrid" size-full> 
+   <vaadin-horizontal-layout spacing width-full margin-left margin-right margin-top> 
+    <vaadin-label size-auto plain-text :middle>
+      Filter By: 
+    </vaadin-label> 
+    <vaadin-css-layout style-name="v-component-group" width="80%" :expand> 
+     <vaadin-text-field icon="fonticon://FontAwesome/f0ca" id="filterField" input-prompt="Filter first name, last name, email ..." style-name="inline-icon" width-full _id="filterField"></vaadin-text-field> 
+     <vaadin-button icon="fonticon://FontAwesome/f00d" style-name="icon-only" id="clearFilterButton" plain-text _id="clearFilterButton"></vaadin-button> 
+    </vaadin-css-layout> 
+    <vaadin-button icon="fonticon://FontAwesome/f067" plain-text _id="addButton" :right>
+      Add New Customer 
+    </vaadin-button> 
+   </vaadin-horizontal-layout> 
+   <vaadin-grid id="grid" size-full _id="grid" :expand></vaadin-grid> 
+  </vaadin-vertical-layout>  
+ </body>
+</html>
