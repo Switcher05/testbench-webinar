@@ -82,23 +82,8 @@
 		</dependency>
 		<dependency>
 			<groupId>com.vaadin</groupId>
-			<artifactId>vaadin-client</artifactId>
-			<scope>provided</scope>
+			<artifactId>vaadin-client-compiled</artifactId>
 		</dependency>
-		<!--
-		  Needed when using the widgetset optimizer (custom ConnectorBundleLoaderFactory).
-		  
-		  For widgetset compilation, vaadin-client-compiler is automatically added on the
-		  compilation classpath by vaadin-maven-plugin so normally there is no need for an
-		  explicit dependency.
-		-->
-		<!--
-		<dependency>
-			<groupId>com.vaadin</groupId>
-			<artifactId>vaadin-client-compiler</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		-->
 		<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin-themes</artifactId>
@@ -154,8 +139,8 @@
 					<execution>
 						<goals>
 							<goal>update-theme</goal>
-							<!--<goal>update-widgetset</goal>-->
-							<!--<goal>compile</goal>-->
+							<goal>update-widgetset</goal>
+							<goal>compile</goal>
 							<!-- <goal>compile-theme</goal> -->
 						</goals>
 					</execution>
@@ -232,19 +217,6 @@
 				   </execution>
 				 </executions>
 				</plugin>
-			    <plugin>
-			        <groupId>com.vaadin.wscdn</groupId>
-			        <artifactId>wscdn-maven-plugin</artifactId>
-			        <version>0.0.2</version>
-			        <executions>
-			            <execution>
-			                <phase>generate-sources</phase>
-			                <goals>
-			                    <goal>generate</goal>
-			                </goals>
-			            </execution>
-			        </executions>
-			    </plugin>
 		</plugins>
 
 		<pluginManagement>
