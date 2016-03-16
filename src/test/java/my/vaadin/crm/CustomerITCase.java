@@ -9,11 +9,10 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import com.vaadin.testbench.TestBenchTestCase;
 import com.vaadin.testbench.elements.ButtonElement;
@@ -23,17 +22,19 @@ import com.vaadin.testbench.elements.GridElement.GridCellElement;
 import com.vaadin.testbench.elements.TextFieldElement;
 
 import my.vaadin.crm.data.CustomerStatus;
-import my.vaadin.crm.data.PersistenceContext;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { PersistenceContext.class })
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+@SpringApplicationConfiguration(classes = Application.class)
+@WebIntegrationTest("server.port:0")
 public class CustomerITCase extends TestBenchTestCase {
+
+	@Value("${local.server.port}")
+	int port;
 
 	@Before
 	public void setup() {
 		setDriver(DriverUtil.getPreferredDriver());
-		getDriver().get("http://localhost:8080/crm");
+		getDriver().get("http://localhost:" + port);
 	}
 
 	@After
@@ -48,7 +49,6 @@ public class CustomerITCase extends TestBenchTestCase {
 
 		CustomerGridPageObject customerGrid = new CustomerGridPageObject(getDriver());
 		customerGrid.searchBy(email);
-		Thread.sleep(500);
 
 		Assert.assertTrue(customerGrid.isEmpty());
 		customerGrid.clearSearch();
