@@ -1,9 +1,7 @@
 package my.vaadin.crm.ui;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.filter.Like;
@@ -11,13 +9,14 @@ import com.vaadin.data.util.filter.Or;
 import com.vaadin.event.SelectionEvent;
 import com.vaadin.event.SelectionEvent.SelectionListener;
 import com.vaadin.shared.ui.grid.ScrollDestination;
+import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.AbstractTextField.TextChangeEventMode;
 
 import my.vaadin.crm.data.Customer;
 import my.vaadin.crm.ui.event.AddCustomerEvent;
 import my.vaadin.crm.ui.event.EditCustomerEvent;
 
-@Dependent
+@SpringComponent
 public class CustomerGrid extends CustomerGridDesign {
 
 	private static final String PROPERTY_EMAIL = "email";
@@ -25,11 +24,8 @@ public class CustomerGrid extends CustomerGridDesign {
 	private static final String PROPERTY_LAST_NAME = "lastName";
 	private static final String PROPERTY_STATUS = "status.caption";
 
-	@Inject
-	private javax.enterprise.event.Event<EditCustomerEvent> editCustomerEvent;
-
-	@Inject
-	private javax.enterprise.event.Event<AddCustomerEvent> addCustomerEvent;
+	private final List<EditCustomerListener> editListeners = new ArrayList<>();
+	private final List<AddCustomerListener> addListeners = new ArrayList<>();
 
 	private BeanItemContainer<Customer> container;
 
@@ -37,7 +33,8 @@ public class CustomerGrid extends CustomerGridDesign {
 		grid.setColumns(PROPERTY_EMAIL, PROPERTY_FIRST_NAME, PROPERTY_LAST_NAME, PROPERTY_STATUS);
 		grid.getColumn(PROPERTY_STATUS).setHeaderCaption("Status");
 		grid.addSelectionListener(selectionListener);
-		addButton.addClickListener(event -> addCustomerEvent.fire(new AddCustomerEvent(CustomerGrid.this)));
+		addButton.addClickListener(event -> addListeners
+				.forEach(listener -> listener.addCustomer(new AddCustomerEvent(CustomerGrid.this))));
 
 		filterField.focus();
 		filterField.setTextChangeEventMode(TextChangeEventMode.LAZY);
@@ -46,6 +43,22 @@ public class CustomerGrid extends CustomerGridDesign {
 			filterField.clear();
 			filter("");
 		});
+	}
+
+	public void addListener(EditCustomerListener listener) {
+		editListeners.add(listener);
+	}
+
+	public void addListener(AddCustomerListener listener) {
+		addListeners.add(listener);
+	}
+
+	public void removeListener(EditCustomerListener listener) {
+		editListeners.remove(listener);
+	}
+
+	public void removeListener(AddCustomerListener listener) {
+		addListeners.remove(listener);
 	}
 
 	public void filter(String text) {
@@ -95,7 +108,19 @@ public class CustomerGrid extends CustomerGridDesign {
 
 		@Override
 		public void select(SelectionEvent event) {
-			editCustomerEvent.fire(new EditCustomerEvent(CustomerGrid.this, (Customer) grid.getSelectedRow()));
+			editListeners.forEach(listener -> listener
+					.editCustomer(new EditCustomerEvent(CustomerGrid.this, (Customer) grid.getSelectedRow())));
 		}
 	};
+
+	@FunctionalInterface
+	public interface EditCustomerListener {
+		void editCustomer(EditCustomerEvent event);
+	}
+
+	@FunctionalInterface
+	public interface AddCustomerListener {
+		void addCustomer(AddCustomerEvent event);
+	}
+
 }

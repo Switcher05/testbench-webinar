@@ -1,28 +1,30 @@
 package my.vaadin.crm.ui;
 
-import javax.inject.Inject;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
+import javax.servlet.annotation.WebServlet;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.context.ContextLoaderListener;
 
 import com.vaadin.annotations.Theme;
-import com.vaadin.cdi.CDIUI;
-import com.vaadin.cdi.CDIViewProvider;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.spring.annotation.EnableVaadin;
+import com.vaadin.spring.annotation.SpringUI;
+import com.vaadin.spring.navigator.SpringViewProvider;
+import com.vaadin.spring.server.SpringVaadinServlet;
 import com.vaadin.ui.UI;
-
-import my.vaadin.crm.data.DatabaseInit;
 
 /**
  *
  */
 @Theme("mytheme")
-@CDIUI("")
+@SpringUI
 public class MyUI extends UI {
 
-	@Inject
-	private CDIViewProvider viewProvider;
+	@Autowired
+	private SpringViewProvider viewProvider;
 
 	@Override
 	protected void init(VaadinRequest vaadinRequest) {
@@ -34,20 +36,16 @@ public class MyUI extends UI {
 		}
 	}
 
+	@WebServlet(value = "/*", asyncSupported = true)
+	public static class Servlet extends SpringVaadinServlet {
+	}
+
 	@WebListener
-	private static class MyUIServlectContextListener implements ServletContextListener {
+	public static class MyContextLoaderListener extends ContextLoaderListener {
+	}
 
-		@Inject
-		private DatabaseInit init;
-
-		@Override
-		public void contextDestroyed(ServletContextEvent arg0) {
-			// do nothing
-		}
-
-		@Override
-		public void contextInitialized(ServletContextEvent arg0) {
-			init.initDatabaseIfEmpty();
-		}
+	@Configuration
+	@EnableVaadin
+	public static class MyConfiguration {
 	}
 }

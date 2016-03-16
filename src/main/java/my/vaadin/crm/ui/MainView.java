@@ -5,27 +5,26 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.EJBException;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
 
-import com.vaadin.cdi.CDIView;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.spring.annotation.SpringView;
 
 import my.vaadin.crm.data.Customer;
 import my.vaadin.crm.data.CustomerFacade;
 import my.vaadin.crm.ui.event.AddCustomerEvent;
 import my.vaadin.crm.ui.event.EditCustomerEvent;
 
-@CDIView(MainView.VIEW_NAME)
+@SpringView(name = MainView.VIEW_NAME)
 public class MainView extends MainViewDesign implements View, Serializable {
 	public static final String VIEW_NAME = "main";
 
-	@Inject
+	@Autowired
 	private CustomerFacade customerFacade;
 
-	@Inject
+	@Autowired
 	private CustomerGrid customerGrid;
 
 	private void setFormVisible(boolean visible) {
@@ -41,6 +40,8 @@ public class MainView extends MainViewDesign implements View, Serializable {
 		setFirstComponent(customerGrid);
 		setFormVisible(false);
 		customerGrid.refreshGrid(customerFacade.list());
+		customerGrid.addListener(this::editCustomer);
+		customerGrid.addListener(this::addCustomer);
 	}
 
 	private void showEditForm(String caption, Customer customer) throws CloneNotSupportedException {
@@ -51,7 +52,7 @@ public class MainView extends MainViewDesign implements View, Serializable {
 	private void onSave(Customer customer) {
 		try {
 			customer = customerFacade.save(customer);
-		} catch (EJBException e) {
+		} catch (Exception e) {
 			Logger.getLogger(getClass().getName()).log(Level.WARNING, "Stale object or something");
 		}
 		customerGrid.refreshGrid(customerFacade.list(), false);
@@ -69,7 +70,7 @@ public class MainView extends MainViewDesign implements View, Serializable {
 		// do nothing
 	}
 
-	public void editCustomer(@Observes EditCustomerEvent event) {
+	public void editCustomer(EditCustomerEvent event) {
 		try {
 			if (event.getCustomer() == null) {
 				setFormVisible(false);
@@ -82,7 +83,7 @@ public class MainView extends MainViewDesign implements View, Serializable {
 		}
 	}
 
-	public void addCustomer(@Observes AddCustomerEvent event) {
+	public void addCustomer(AddCustomerEvent event) {
 		try {
 			showEditForm("Add New Customer", new Customer());
 			setFormVisible(true);

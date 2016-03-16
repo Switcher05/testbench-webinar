@@ -3,16 +3,19 @@ package my.vaadin.crm.data;
 import java.time.LocalDate;
 import java.util.Date;
 
-import javax.ejb.Stateless;
-import javax.inject.Inject;
+import javax.annotation.PostConstruct;
 
-@Stateless
-public class DatabaseInit {
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-	@Inject
+@Component
+class DatabaseInit {
+
+	@Autowired
 	private CustomerRepository customerRepository;
 
-	public void initDatabaseIfEmpty() {
+	@PostConstruct
+	private void initDatabaseIfEmpty() {
 		if (!customerRepository.findAll().isEmpty()) {
 			return;
 		}

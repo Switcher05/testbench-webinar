@@ -1,9 +1,9 @@
 package my.vaadin.crm.data;
 
-import org.apache.deltaspike.data.api.EntityRepository;
-import org.apache.deltaspike.data.api.Repository;
+import java.util.List;
 
-@Repository
-public interface CustomerRepository extends EntityRepository<Customer, Long> {
+import org.springframework.data.repository.CrudRepository;
 
+public interface CustomerRepository extends CrudRepository<Customer, Long> {
+	public List<Customer> findAll();
 }

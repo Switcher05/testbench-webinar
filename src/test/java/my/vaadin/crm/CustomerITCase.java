@@ -4,10 +4,16 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import com.vaadin.testbench.TestBenchTestCase;
 import com.vaadin.testbench.elements.ButtonElement;
@@ -17,7 +23,11 @@ import com.vaadin.testbench.elements.GridElement.GridCellElement;
 import com.vaadin.testbench.elements.TextFieldElement;
 
 import my.vaadin.crm.data.CustomerStatus;
+import my.vaadin.crm.data.PersistenceContext;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { PersistenceContext.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
 public class CustomerITCase extends TestBenchTestCase {
 
 	@Before
@@ -52,7 +62,6 @@ public class CustomerITCase extends TestBenchTestCase {
 		customerForm.save();
 
 		customerGrid.searchBy(email);
-		Thread.sleep(500);
 		Assert.assertFalse(customerGrid.isEmpty());
 		Assert.assertEquals(email, customerGrid.getGridCell(0, 0));
 
@@ -103,7 +112,11 @@ public class CustomerITCase extends TestBenchTestCase {
 
 		public void searchBy(String str) {
 			$(TextFieldElement.class).first().sendKeys(str);
-			testBench().waitForVaadin();
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 
 		public String getGridCell(int row, int col) {

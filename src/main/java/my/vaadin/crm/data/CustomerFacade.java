@@ -2,17 +2,17 @@ package my.vaadin.crm.data;
 
 import java.util.List;
 
-import javax.ejb.Stateless;
-import javax.inject.Inject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-@Stateless
+@Service
 public class CustomerFacade {
 
-	@Inject
+	@Autowired
 	private CustomerRepository repository;
 
 	public Customer save(Customer customer) {
-		return repository.saveAndFlush(customer);
+		return repository.save(customer);
 	}
 
 	public List<Customer> list() {
@@ -20,6 +20,6 @@ public class CustomerFacade {
 	}
 
 	public Customer get(Long id) {
-		return repository.findBy(id);
+		return repository.findOne(id);
 	}
 }
