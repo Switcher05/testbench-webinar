@@ -11,3 +11,6 @@ Workflow
 
 To develop the theme, simply update the relevant theme files and reload the application.
 Pre-compiling a theme eliminates automatic theme updates at runtime - see below for more information.
+
+The FirefoxDriver didn't seem to work with 45.0 so I was using older ESR.
+I will figure it out and update pom.xml to fix it.
