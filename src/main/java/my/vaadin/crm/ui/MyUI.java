@@ -35,17 +35,4 @@ public class MyUI extends UI {
 			navigator.navigateTo(MainView.VIEW_NAME);
 		}
 	}
-
-	@WebServlet(value = "/*", asyncSupported = true)
-	public static class Servlet extends SpringVaadinServlet {
-	}
-
-	@WebListener
-	public static class MyContextLoaderListener extends ContextLoaderListener {
-	}
-
-	@Configuration
-	@EnableVaadin
-	public static class MyConfiguration {
-	}
 }
